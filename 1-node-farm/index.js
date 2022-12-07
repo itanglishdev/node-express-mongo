@@ -29,11 +29,35 @@ const url = require('url')
 // //////////////////////////////////////////////////////
 // SERVER
 
+
+const data = fs.readFileSync(`${__dirname}/starter/dev-data/data.json`,'utf-8')
+    const dataObject = JSON.parse(data)
+
 const server = http.createServer((req,res) => {
     const pathName = req.url
 
-    if (pathName === '')
-    res.end('Hello from the server')
+    //-----------  Overview Page 
+    if (pathName === '/' || pathName === '/overview') {
+        
+
+        res.end('This is the OVERVIEW')
+
+    // -----------Product Page
+    } else if (pathName === '/product') {
+        res.end('This is the PRODUCT')
+
+    // -----------API
+    } else if (pathName === '/api') {
+         res.writeHead(200, {'Content-type': 'application/json'})
+         res.end(data)
+
+    // ---------Not Found
+    }else {
+        res.writeHead(404, {
+            'Content-type': 'text/html'
+        })
+        res.end('<h1>This page not found!</h1>')
+    }
 })
 
 server.listen(8000, '127.0.0.1', () => {
