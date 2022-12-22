@@ -1,8 +1,8 @@
 const fs = require('fs')
 const http = require('http')
 const url = require('url')
-
-const replaceTemplate = require('./starter/modules/replaceTemplate')
+const slugify = require('slugify')
+const replaceTemplate = require('./modules/replaceTemplate')
 
 // ////////////////////////////////////
 // FILES
@@ -34,13 +34,18 @@ const replaceTemplate = require('./starter/modules/replaceTemplate')
 
 
 
-const tempOverview = fs.readFileSync(`${__dirname}/starter/templates/template-overview.html`,'utf-8')
-const tempCard = fs.readFileSync(`${__dirname}/starter/templates/template-card.html`,'utf-8')
-const tempProduct = fs.readFileSync(`${__dirname}/starter/templates/template-product.html`,'utf-8')
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`,'utf-8')
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`,'utf-8')
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`,'utf-8')
 
-const data = fs.readFileSync(`${__dirname}/starter/dev-data/data.json`,'utf-8')
+const data = fs.readFileSync(`${__dirname}/dev-data/data.json`,'utf-8')
 const dataObj = JSON.parse(data)
 
+const slugs = dataObj.map(el => slugify(el.productName, {lower: true}))
+console.log(slugs)
+// console.log(slugify('Fresh Avocados', {lower: true}));
+
+//           ------SERVER CREATION-------
 const server = http.createServer((req,res) => {
     const {query, pathname} = url.parse(req.url, true)
 
