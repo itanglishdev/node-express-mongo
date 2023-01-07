@@ -1,20 +1,23 @@
 const express = require('express')
-const fs = require('fs')
 
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`))
+// We are importing here 
+const tourController = require('./../controllers/tourController')
+
+//  We could DESTRUCTURE the object also
+// const {getAllTours, createTour, getTour, updateTour, deleteTour} = require('./../controllers/tourController')
 
 const router = express.Router() 
 
 
 router
   .route('/')
-  .get(getAllTours)
-  .post(createTour)
+  .get(tourController.getAllTours)
+  .post(tourController.createTour)
 
 router
   .route('/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour)
+  .get(tourController.getTour)
+  .patch(tourController.updateTour)
+  .delete(tourController.deleteTour)
 
   module.exports = router
