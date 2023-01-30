@@ -1,3 +1,4 @@
+const { request } = require('express');
 const Tour = require('./../models/tourModel')
 
 // exports.checkID = (req, res, next, val) => {
@@ -36,16 +37,29 @@ exports.getAllTours = async (req,res) => {
       query = query.sort('-createdAt')
     }
 
+    // 3) Field limiting 
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ')
+      query = query.select(fields)
+    } else {
+      query = query.select('-__v')
+    }
+
+    // 4) Pagination
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 100
+    const skip = (page - 1) * limit
+
+    query = query.skip(skip).limit(limit)
+
+    if (request.query.page) {
+      const numTours = await Tour.countDocuments()
+      if (skip >= numTours) throw new Error ('This page does not exist')
+    }
+
+
     // EXECUTE QUERY
     const tours = await query
-
-    //{ difficulty: 'easy', duration: { $gte: 5}}
-
-    // const tours = await Tour.find()
-    // .where('duration')
-    // .equals(5)
-    // .where('difficulty')
-    // .equals('easy')
     
     // SEND RESPONSE
     res.status(200).json({
